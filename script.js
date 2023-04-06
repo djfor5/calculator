@@ -1,28 +1,25 @@
-
-
-function add(num1, num2) {
-  return num1 + num2
-}
-
-
-function subtract(num1, num2) {
-  return num1 - num2
-}
-
-
-function multiply(num1, num2) {
-  return num1 * num2
-}
-
-
-function divide(num1, num2) {
-  return num1 / num2
-}
-
-
-let num1
+let number1
 let operator
-let num2
+let number2
+let operatorCount = 0
+let allowConcatValues = true
+let allowEquals = false
+
+const display = document.querySelector('#display')
+const digitBtns = document.querySelectorAll('#digits-container > button')
+const operatorBtns = document.querySelectorAll('#operators-container > button')
+const clear = document.querySelector('#clear')
+const equals = document.querySelector('#equals')
+
+display.textContent = ""
+
+function add(num1, num2) { return num1 + num2 }
+
+function subtract(num1, num2) { return num1 - num2 }
+
+function multiply(num1, num2) { return num1 * num2 }
+
+function divide(num1, num2) { return num1 / num2 }
 
 function operate(num1, operator, num2) {
   switch (operator){
@@ -39,38 +36,76 @@ function operate(num1, operator, num2) {
   }
 }
 
-console.log(`%coperate function, with 'add' operator`, "font-weight: bold")
-console.log(`operate(1,'add',2): ${operate(1,'add',2)}`)
-console.log('\n')
+digitBtns.forEach(digitBtn => {
+  digitBtn.addEventListener('click', () => {
+    if (!allowConcatValues) return // prevent additional digits from being abitrarily added to result displayed
+    displayValue(digitBtn.id)
+  })
+})
 
-console.log(`%coperate function, with 'subtract' operator`, "font-weight: bold")
-console.log(`operate(1,'subtract',2): ${operate(1,'subtract',2)}`)
-console.log('\n')
+operatorBtns.forEach(operatorBtn => {
+  operatorBtn.addEventListener('click', ()=>{
+    if (operatorCount !== 0) return // only allow one operator to be used, count resets after equals button is clicked
+    number1 = display.textContent
+    operator = operatorBtn.textContent
+    operatorCount++
+    allowConcatValues = true
 
-console.log(`%coperate function, with 'multiply' operator`, "font-weight: bold")
-console.log(`operate(1,'multiply',2): ${operate(1,'multiply',2)}`)
-console.log('\n')
+    displayValue(' ' + operator + ' ')
+  })
+})
 
-console.log(`%coperate function, with 'divide' operator`, "font-weight: bold")
-console.log(`operate(1,'divide',2): ${operate(1,'divide',2)}`)
-console.log('\n')
+equals.addEventListener('click', () => {
+  let operandOperatorOperand = display.textContent.split(' ')
+  const isValidExpression = operandOperatorOperand.length === 3
+  if (!isValidExpression) return // prevent equals button if mathematical expression does not include operand + operator + operand 
+  number1 = Number(number1)
+  const operatorSymbol = operandOperatorOperand[1]
+  switch (operatorSymbol){
+    case '+':
+      operator = 'add'
+      break;
+    case '-':
+      operator = 'subtract'
+      break;
+    case '*':
+      operator = 'multiply'
+      break;
+    case '/':
+      operator = 'divide'
+      break;
+  }
+  number2 = Number(operandOperatorOperand[2])
+
+  console.log(`number1: `, number1)
+  console.log(`operator: `, operator)
+  console.log(`number2: `, number2)
+
+  
+  const result = operate(number1, operator, number2)
+  operatorCount = 0 // reset count to enable operator to be used again
+  allowConcatValues = false // prevent additional digits from being abitrarily added to result displayed
+  clearDisplay()
+  displayValue(result)
+
+  console.log(`%cresult: ${result}`, "font-weight: bold")
+  console.log('\n')
+})
 
 
+clear.addEventListener('click', () => {
+  allowConcatValues = true
+  operatorCount = 0
+  number1 = null
+  operator = null
+  number2 = null
 
+  clearDisplay()
+  console.clear()
+})
 
+function displayValue(value){ display.textContent += value }
 
-console.log(`%cadd function`, "font-weight: bold")
-console.log(`add(3,2): ${add(3,2)}`)
-console.log('\n')
-
-console.log(`%csubtract function`, "font-weight: bold")
-console.log(`subtract(7,3): ${subtract(7,3)}`)
-console.log('\n')
-
-console.log(`%cmultiply function`, "font-weight: bold")
-console.log(`multiply(2,5): ${multiply(2,5)}`)
-console.log('\n')
-
-console.log(`%cdivide function`, "font-weight: bold")
-console.log(`divide(12,3): ${divide(12,3)}`)
-console.log('\n')
+function clearDisplay() {
+  display.textContent = ""
+}
