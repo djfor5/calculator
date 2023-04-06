@@ -1,9 +1,13 @@
 let number1
 let operator
 let number2
+let expressionStr = ""
+
 let operatorCount = 0
 let allowConcatValues = true
-let allowEquals = false
+
+let activeNumber = ""
+let lastSelection = ""
 
 const display = document.querySelector('#display')
 const digitBtns = document.querySelectorAll('#digits-container > button')
@@ -13,6 +17,7 @@ const equals = document.querySelector('#equals')
 
 display.textContent = ""
 
+
 function add(num1, num2) { return num1 + num2 }
 
 function subtract(num1, num2) { return num1 - num2 }
@@ -20,6 +25,7 @@ function subtract(num1, num2) { return num1 - num2 }
 function multiply(num1, num2) { return num1 * num2 }
 
 function divide(num1, num2) { return num1 / num2 }
+
 
 function operate(num1, operator, num2) {
   switch (operator){
@@ -36,30 +42,48 @@ function operate(num1, operator, num2) {
   }
 }
 
+
 digitBtns.forEach(digitBtn => {
   digitBtn.addEventListener('click', () => {
     if (!allowConcatValues) return // prevent additional digits from being abitrarily added to result displayed
-    displayValue(digitBtn.id)
+    
+    expressionStr += digitBtn.id
+    lastSelection = "operand"
+
+    displayValue(`${expressionStr}`)
   })
 })
+
 
 operatorBtns.forEach(operatorBtn => {
   operatorBtn.addEventListener('click', ()=>{
-    if (operatorCount !== 0) return // only allow one operator to be used, count resets after equals button is clicked
-    number1 = display.textContent
+    if (operatorCount !== 0 && lastSelection !== 'operator') return // only allow one operator to be used (excluding negatives)
+    if ((lastSelection === "operator" || lastSelection === "") && operatorBtn.id !== 'subtract') return // don't allow double operator unless second is negative
+    if (lastSelection === "negative") return // only operand can follow a negative
+
     operator = operatorBtn.textContent
-    operatorCount++
+    if (lastSelection === "operand"){
+      operatorCount++
+    }
+    if ((lastSelection === "operator" || lastSelection === "") && operatorBtn.id === 'subtract'){
+      lastSelection = "negative"
+      expressionStr += `${operator}`
+    } else {
+      lastSelection = "operator"
+      expressionStr += ` ${operator} `
+    }
     allowConcatValues = true
 
-    displayValue(' ' + operator + ' ')
+    displayValue(`${expressionStr}`)
   })
 })
 
+
 equals.addEventListener('click', () => {
-  let operandOperatorOperand = display.textContent.split(' ')
-  const isValidExpression = operandOperatorOperand.length === 3
-  if (!isValidExpression) return // prevent equals button if mathematical expression does not include operand + operator + operand 
-  number1 = Number(number1)
+  if (lastSelection !== 'operand' || operatorCount !== 1) return // exit if expression does not contain operand operator operand
+  let operandOperatorOperand = expressionStr.split(' ')
+  
+  number1 = Number(operandOperatorOperand[0])
   const operatorSymbol = operandOperatorOperand[1]
   switch (operatorSymbol){
     case '+':
@@ -77,17 +101,17 @@ equals.addEventListener('click', () => {
   }
   number2 = Number(operandOperatorOperand[2])
 
+  const result = operate(number1, operator, number2)
+  
+  operatorCount = 0 // reset count to enable operator to be used again
+  expressionStr = result // resolve the expression to show the result
+  allowConcatValues = false // prevent additional digits from being abitrarily added to result displayed
+  lastSelection = "operand"
+  
+  displayValue(result)
   console.log(`number1: `, number1)
   console.log(`operator: `, operator)
   console.log(`number2: `, number2)
-
-  
-  const result = operate(number1, operator, number2)
-  operatorCount = 0 // reset count to enable operator to be used again
-  allowConcatValues = false // prevent additional digits from being abitrarily added to result displayed
-  clearDisplay()
-  displayValue(result)
-
   console.log(`%cresult: ${result}`, "font-weight: bold")
   console.log('\n')
 })
@@ -96,6 +120,8 @@ equals.addEventListener('click', () => {
 clear.addEventListener('click', () => {
   allowConcatValues = true
   operatorCount = 0
+  expressionStr = ""
+  lastSelection = ""
   number1 = null
   operator = null
   number2 = null
@@ -104,7 +130,7 @@ clear.addEventListener('click', () => {
   console.clear()
 })
 
-function displayValue(value){ display.textContent += value }
+function displayValue(value){ display.textContent = value }
 
 function clearDisplay() {
   display.textContent = ""
