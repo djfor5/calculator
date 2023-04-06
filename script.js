@@ -10,8 +10,8 @@ let activeNumber = ""
 let lastSelection = ""
 
 const display = document.querySelector('#display')
-const digitBtns = document.querySelectorAll('#digits-container > button')
-const operatorBtns = document.querySelectorAll('#operators-container > button')
+const digitBtns = document.querySelectorAll('#digits-container button')
+const operatorBtns = document.querySelectorAll('#operators-container button')
 const clear = document.querySelector('#clear')
 const equals = document.querySelector('#equals')
 
