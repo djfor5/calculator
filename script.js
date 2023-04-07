@@ -2,6 +2,7 @@ let number1
 let operator
 let number2
 let expressionStr = ""
+let resultLength = 0
 
 let operatorCount = 0
 
@@ -179,6 +180,7 @@ equals.addEventListener('click', () => {
   allowDecimal = false
   allowBackspace = false
   allowEquals = false
+  resultLength = expressionStr.length
 
   lastSelection = "operand" // set last value input
 
@@ -203,6 +205,7 @@ clear.addEventListener('click', () => {
 
   operatorCount = 0
   expressionStr = ""
+  resultLength = 0
 
   lastSelection = "" // set last value input
 
@@ -218,27 +221,44 @@ clear.addEventListener('click', () => {
 
 backspace.addEventListener('click', ()=>{
   if (!allowBackspace) return
+  if (expressionStr.length <= resultLength) return
   if (expressionStr === "") return
 
-  if (expressionStr.slice(expressionStr.length-1) === ' ') {
+  if (expressionStr.slice(expressionStr.length-1) === '.') {
+    expressionStr = expressionStr.slice(0,expressionStr.length-1)
+    lastSelection = 'operand'
+    allowDecimal = true
+  } else if (expressionStr.slice(expressionStr.length-1) === ' ') {
     expressionStr = expressionStr.slice(0,expressionStr.length-3)
     lastSelection = 'operand'
+    allowBackspace = true
+    allowEquals = false
     operatorCount = 0
   } else if (expressionStr.slice(expressionStr.length-1) === '-'){
     expressionStr = expressionStr.slice(0,expressionStr.length-1)
     if (expressionStr.length > 0){
       lastSelection = 'operator'
+      allowBackspace = true
+      allowEquals = false
     } else {
       lastSelection = ""
+      allowBackspace = false
+      allowEquals = false
     }
   } else {
     expressionStr = expressionStr.slice(0,expressionStr.length-1)
     if (expressionStr.length === 0){
       lastSelection = ''
+      allowBackspace = false
+      allowEquals = false
     } else if (expressionStr.slice(expressionStr.length-1) === ' ') {
       lastSelection = 'operator'
+      allowBackspace = true
+      allowEquals = false
     } else if (expressionStr.slice(expressionStr.length-1) === '-'){
       lastSelection = 'negative'
+      allowBackspace = true
+      allowEquals = false
     }
   }
 
@@ -266,7 +286,7 @@ function updateAllowedButtons() {
     console.log('%cDecimal NOT allowed', "color: red")
   }
 
-  if (allowBackspace) {
+  if (allowBackspace && expressionStr.length > resultLength) {
     backspace.classList.remove('inactive')
     console.log('%cBackspace allowed', "color: green")
   } else {
