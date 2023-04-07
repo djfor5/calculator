@@ -57,6 +57,12 @@ h1 {
   display: flex;
 }
 
+#digits-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
 #digits-container button {
   padding: 5px 12px;
   margin-bottom: 7px;
@@ -74,6 +80,7 @@ h1 {
 #operators-container {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   margin-left: 15px;
 }
 
