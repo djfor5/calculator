@@ -5,6 +5,7 @@ let expressionStr = ""
 
 let operatorCount = 0
 let allowConcatValues = true
+let allowBackspace = true
 
 let activeNumber = ""
 let lastSelection = ""
@@ -13,6 +14,7 @@ const display = document.querySelector('#display')
 const digitBtns = document.querySelectorAll('#digits-container button')
 const operatorBtns = document.querySelectorAll('#operators-container button')
 const clear = document.querySelector('#clear')
+const backspace = document.querySelector('#backspace')
 const equals = document.querySelector('#equals')
 
 display.textContent = ""
@@ -73,6 +75,7 @@ operatorBtns.forEach(operatorBtn => {
       expressionStr += ` ${operator} `
     }
     allowConcatValues = true
+    allowBackspace = true
 
     displayValue(`${expressionStr}`)
   })
@@ -104,11 +107,13 @@ equals.addEventListener('click', () => {
   const result = operate(number1, operator, number2)
   
   operatorCount = 0 // reset count to enable operator to be used again
-  expressionStr = result // resolve the expression to show the result
+  expressionStr = result.toString() // resolve the expression to show the result
   allowConcatValues = false // prevent additional digits from being abitrarily added to result displayed
+  allowBackspace = false
   lastSelection = "operand"
   
-  displayValue(result)
+
+  displayValue(expressionStr)
   console.log(`number1: `, number1)
   console.log(`operator: `, operator)
   console.log(`number2: `, number2)
@@ -119,6 +124,7 @@ equals.addEventListener('click', () => {
 
 clear.addEventListener('click', () => {
   allowConcatValues = true
+  allowBackspace = true
   operatorCount = 0
   expressionStr = ""
   lastSelection = ""
@@ -128,6 +134,35 @@ clear.addEventListener('click', () => {
 
   clearDisplay()
   console.clear()
+})
+
+backspace.addEventListener('click', ()=>{
+  if (expressionStr === "") return
+  if (!allowBackspace) return
+
+  if (expressionStr.slice(expressionStr.length-1) === ' ') {
+    expressionStr = expressionStr.slice(0,expressionStr.length-3)
+    lastSelection = 'operand'
+    operatorCount = 0
+  } else if (expressionStr.slice(expressionStr.length-1) === '-'){
+    expressionStr = expressionStr.slice(0,expressionStr.length-1)
+    if (expressionStr.length > 0){
+      lastSelection = 'operator'
+    } else {
+      lastSelection = ""
+    }
+  } else {
+    expressionStr = expressionStr.slice(0,expressionStr.length-1)
+    if (expressionStr.length === 0){
+      lastSelection = ''
+    } else if (expressionStr.slice(expressionStr.length-1) === ' ') {
+      lastSelection = 'operator'
+    } else if (expressionStr.slice(expressionStr.length-1) === '-'){
+      lastSelection = 'negative'
+    }
+  }
+
+  displayValue(`${expressionStr}`)
 })
 
 function displayValue(value){ display.textContent = value }
