@@ -4,11 +4,13 @@ let number2
 let expressionStr = ""
 
 let operatorCount = 0
-let allowConcatValues = true
-let allowBackspace = true
-let allowDecimal = true
 
-let activeNumber = ""
+// set initial functionality toggles
+let allowDigits = true
+let allowDecimal = true
+let allowBackspace = false
+let allowEquals = false
+
 let lastSelection = ""
 
 const display = document.querySelector('#display')
@@ -19,8 +21,7 @@ const clear = document.querySelector('#clear')
 const backspace = document.querySelector('#backspace')
 const equals = document.querySelector('#equals')
 
-display.textContent = ""
-
+displayValue(expressionStr)
 
 function add(num1, num2) { return num1 + num2 }
 
@@ -49,12 +50,19 @@ function operate(num1, operator, num2) {
 
 digitBtns.forEach(digitBtn => {
   digitBtn.addEventListener('click', () => {
-    if (!allowConcatValues) return // prevent additional digits from being abitrarily added to result displayed
+    if (!allowDigits) return // prevent additional digits from being abitrarily added to result displayed
     
     expressionStr += digitBtn.id
-    lastSelection = "operand"
 
-    displayValue(`${expressionStr}`)
+    // toggle functionality
+    allowBackspace = true
+    if (operatorCount > 0) {
+      allowEquals = true
+    }
+
+    lastSelection = "operand" // set last value input
+
+    displayValue(expressionStr)
   })
 })
 
@@ -63,40 +71,52 @@ decimal.addEventListener('click', () => {
   if (!allowDecimal) return
 
   expressionStr += decimal.textContent
-  allowDecimal = false
 
-  displayValue(`${expressionStr}`)
+  // toggle functionality
+  allowDecimal = false
+  allowBackspace = true
+  if (operatorCount > 0) {
+    allowEquals = true
+  }
+
+  lastSelection = "operand" // set last value input
+
+  displayValue(expressionStr)
 })
 
 
 operatorBtns.forEach(operatorBtn => {
   operatorBtn.addEventListener('click', ()=>{
+    // if (!allowOperator) return
+    if (lastSelection === "negative") return // only operand can follow a negative
     if (operatorCount !== 0 && lastSelection !== 'operator') return // only allow one operator to be used (excluding negatives)
     if ((lastSelection === "operator" || lastSelection === "") && operatorBtn.id !== 'subtract') return // don't allow double operator unless second is negative
-    if (lastSelection === "negative") return // only operand can follow a negative
 
     operator = operatorBtn.textContent
-    if (lastSelection === "operand"){
-      operatorCount++
-    }
     if ((lastSelection === "operator" || lastSelection === "") && operatorBtn.id === 'subtract'){
-      lastSelection = "negative"
+      lastSelection = "negative" // set last value input
       expressionStr += `${operator}`
-    } else {
-      lastSelection = "operator"
+    } else if (lastSelection === "operand"){
+      lastSelection = "operator" // set last value input
       expressionStr += ` ${operator} `
-    }
-    allowConcatValues = true
-    allowBackspace = true
-    allowDecimal = true
+      operatorCount++
+    } 
 
-    displayValue(`${expressionStr}`)
+    // toggle functionality
+    allowDigits = true
+    allowDecimal = true
+    allowBackspace = true
+    allowEquals = false
+
+    displayValue(expressionStr)
   })
 })
 
 
 equals.addEventListener('click', () => {
+  if (!allowEquals) return
   if (lastSelection !== 'operand' || operatorCount !== 1) return // exit if expression does not contain operand operator operand
+  
   let operandOperatorOperand = expressionStr.split(' ')
   
   number1 = Number(operandOperatorOperand[0])
@@ -130,11 +150,13 @@ equals.addEventListener('click', () => {
   // }
   // console.log(decimalPlaces)
 
-  allowConcatValues = false // prevent additional digits from being abitrarily added to result displayed
-  allowBackspace = false
+  // toggle functionality
+  allowDigits = false // prevent additional digits from being abitrarily added to result displayed
   allowDecimal = false
-  lastSelection = "operand"
-  
+  allowBackspace = false
+  allowEquals = false
+
+  lastSelection = "operand" // set last value input
 
   displayValue(expressionStr)
   console.log(`number1: `, number1)
@@ -146,12 +168,18 @@ equals.addEventListener('click', () => {
 
 
 clear.addEventListener('click', () => {
-  allowConcatValues = true
-  allowBackspace = true
+  // toggle functionality
+  allowDigits = true
   allowDecimal = true
+  allowBackspace = false
+  allowOperator = false
+  allowEquals = false
+
   operatorCount = 0
   expressionStr = ""
-  lastSelection = ""
+  
+  lastSelection = "" // set last value input
+
   number1 = null
   operator = null
   number2 = null
@@ -161,8 +189,8 @@ clear.addEventListener('click', () => {
 })
 
 backspace.addEventListener('click', ()=>{
-  if (expressionStr === "") return
   if (!allowBackspace) return
+  if (expressionStr === "") return
 
   if (expressionStr.slice(expressionStr.length-1) === ' ') {
     expressionStr = expressionStr.slice(0,expressionStr.length-3)
@@ -186,7 +214,7 @@ backspace.addEventListener('click', ()=>{
     }
   }
 
-  displayValue(`${expressionStr}`)
+  displayValue(expressionStr)
 })
 
 function displayValue(value){ display.textContent = value }
