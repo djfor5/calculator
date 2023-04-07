@@ -6,12 +6,14 @@ let expressionStr = ""
 let operatorCount = 0
 let allowConcatValues = true
 let allowBackspace = true
+let allowDecimal = true
 
 let activeNumber = ""
 let lastSelection = ""
 
 const display = document.querySelector('#display')
-const digitBtns = document.querySelectorAll('#digits-container button')
+const digitBtns = document.querySelectorAll('#digits-container .digit')
+const decimal = document.querySelector('#decimal')
 const operatorBtns = document.querySelectorAll('#operators-container button')
 const clear = document.querySelector('#clear')
 const backspace = document.querySelector('#backspace')
@@ -57,6 +59,16 @@ digitBtns.forEach(digitBtn => {
 })
 
 
+decimal.addEventListener('click', () => {
+  if (!allowDecimal) return
+
+  expressionStr += decimal.textContent
+  allowDecimal = false
+
+  displayValue(`${expressionStr}`)
+})
+
+
 operatorBtns.forEach(operatorBtn => {
   operatorBtn.addEventListener('click', ()=>{
     if (operatorCount !== 0 && lastSelection !== 'operator') return // only allow one operator to be used (excluding negatives)
@@ -76,6 +88,7 @@ operatorBtns.forEach(operatorBtn => {
     }
     allowConcatValues = true
     allowBackspace = true
+    allowDecimal = true
 
     displayValue(`${expressionStr}`)
   })
@@ -108,8 +121,18 @@ equals.addEventListener('click', () => {
   
   operatorCount = 0 // reset count to enable operator to be used again
   expressionStr = result.toString() // resolve the expression to show the result
+
+  // let decimalPlaces = expressionStr.split('.')[1].length
+  // if (decimalPlaces > 5){
+  //   expressionStr = Number(expressionStr)
+  //   expressionStr = Math.round(expressionStr * 100000) / 100000
+  //   expressionStr = expressionStr.toString()
+  // }
+  // console.log(decimalPlaces)
+
   allowConcatValues = false // prevent additional digits from being abitrarily added to result displayed
   allowBackspace = false
+  allowDecimal = false
   lastSelection = "operand"
   
 
@@ -125,6 +148,7 @@ equals.addEventListener('click', () => {
 clear.addEventListener('click', () => {
   allowConcatValues = true
   allowBackspace = true
+  allowDecimal = true
   operatorCount = 0
   expressionStr = ""
   lastSelection = ""
