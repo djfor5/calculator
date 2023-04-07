@@ -13,4 +13,4 @@ Creating this project helps to improve the following skills:
 - CSS styling, layouts, flexbox
 
 ## URL
-Click [here](https://djfor5.github.io/calculator/) to visit Odin Recipes!
+Click [here](https://djfor5.github.io/calculator/) to visit Calculator!
