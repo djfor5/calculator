@@ -17,9 +17,13 @@ const display = document.querySelector('#display')
 const digitBtns = document.querySelectorAll('#digits-container .digit')
 const decimal = document.querySelector('#decimal')
 const operatorBtns = document.querySelectorAll('#operators-container button')
+const addMultiplyDivideBtns = document.querySelectorAll('.operators-excluding-subtract')
+const subtractBtn = document.querySelector('#subtract')
 const clear = document.querySelector('#clear')
 const backspace = document.querySelector('#backspace')
 const equals = document.querySelector('#equals')
+
+updateAllowedButtons()
 
 displayValue(expressionStr)
 
@@ -61,6 +65,8 @@ digitBtns.forEach(digitBtn => {
     }
 
     lastSelection = "operand" // set last value input
+   
+    updateAllowedButtons()
 
     displayValue(expressionStr)
   })
@@ -70,7 +76,13 @@ digitBtns.forEach(digitBtn => {
 decimal.addEventListener('click', () => {
   if (!allowDecimal) return
 
-  expressionStr += decimal.textContent
+  // add leading zero before decimal if no other digit is before the decimal
+  if (lastSelection === "" || lastSelection === "operator" || lastSelection === "negative") {
+    expressionStr += "0" + decimal.textContent
+  } else {
+    expressionStr += decimal.textContent
+  }
+
 
   // toggle functionality
   allowDecimal = false
@@ -80,6 +92,8 @@ decimal.addEventListener('click', () => {
   }
 
   lastSelection = "operand" // set last value input
+  
+  updateAllowedButtons()
 
   displayValue(expressionStr)
 })
@@ -91,6 +105,12 @@ operatorBtns.forEach(operatorBtn => {
     if (lastSelection === "negative") return // only operand can follow a negative
     if (operatorCount !== 0 && lastSelection !== 'operator') return // only allow one operator to be used (excluding negatives)
     if ((lastSelection === "operator" || lastSelection === "") && operatorBtn.id !== 'subtract') return // don't allow double operator unless second is negative
+
+    // add trailing zero if last character is a decimal at time of adding an operator
+    if (expressionStr.slice(expressionStr.length-1) === '.'){
+      expressionStr += '0'
+      displayValue(expressionStr)
+    }
 
     operator = operatorBtn.textContent
     if ((lastSelection === "operator" || lastSelection === "") && operatorBtn.id === 'subtract'){
@@ -107,6 +127,8 @@ operatorBtns.forEach(operatorBtn => {
     allowDecimal = true
     allowBackspace = true
     allowEquals = false
+    
+    updateAllowedButtons()
 
     displayValue(expressionStr)
   })
@@ -119,7 +141,8 @@ equals.addEventListener('click', () => {
   
   let operandOperatorOperand = expressionStr.split(' ')
   
-  number1 = Number(operandOperatorOperand[0])
+  number1 = operandOperatorOperand[0]
+  number1 = Number(number1)
   const operatorSymbol = operandOperatorOperand[1]
   switch (operatorSymbol){
     case '+':
@@ -135,7 +158,8 @@ equals.addEventListener('click', () => {
       operator = 'divide'
       break;
   }
-  number2 = Number(operandOperatorOperand[2])
+  number2 = operandOperatorOperand[2]
+  number2 = Number(number2)
 
   const result = operate(number1, operator, number2)
   
@@ -158,6 +182,8 @@ equals.addEventListener('click', () => {
 
   lastSelection = "operand" // set last value input
 
+  updateAllowedButtons()
+
   displayValue(expressionStr)
   console.log(`number1: `, number1)
   console.log(`operator: `, operator)
@@ -177,15 +203,17 @@ clear.addEventListener('click', () => {
 
   operatorCount = 0
   expressionStr = ""
-  
+
   lastSelection = "" // set last value input
 
   number1 = null
   operator = null
   number2 = null
 
-  clearDisplay()
   console.clear()
+  updateAllowedButtons()
+
+  clearDisplay()
 })
 
 backspace.addEventListener('click', ()=>{
@@ -214,10 +242,66 @@ backspace.addEventListener('click', ()=>{
     }
   }
 
+  updateAllowedButtons()
+
   displayValue(expressionStr)
 })
 
 function displayValue(value){ display.textContent = value }
+
+function updateAllowedButtons() {
+  if (allowDigits) {
+    digitBtns.forEach(digitBtn => digitBtn.classList.remove('inactive'))
+    console.log('%cDigits allowed', "color: green")
+  } else {
+    digitBtns.forEach(digitBtn => digitBtn.classList.add('inactive'))
+    console.log('%cDigits NOT allowed', "color: red")
+  }
+
+  if (allowDecimal) {
+    decimal.classList.remove('inactive')
+    console.log('%cDecimal allowed', "color: green")
+  } else {
+    decimal.classList.add('inactive')
+    console.log('%cDecimal NOT allowed', "color: red")
+  }
+
+  if (allowBackspace) {
+    backspace.classList.remove('inactive')
+    console.log('%cBackspace allowed', "color: green")
+  } else {
+    backspace.classList.add('inactive')
+    console.log('%cBackspace NOT allowed', "color: red")
+  }
+
+  // check for add, multiply, and divide button
+  if (lastSelection !== "" && lastSelection !== "operator" && lastSelection !== "negative" && operatorCount === 0) {
+    addMultiplyDivideBtns.forEach(addMultiplyDivideBtn => addMultiplyDivideBtn.classList.remove('inactive'))
+    console.log('%cAdd, multiply, and divide allowed', "color: green")
+  } else {
+    addMultiplyDivideBtns.forEach(addMultiplyDivideBtn => addMultiplyDivideBtn.classList.add('inactive'))
+    console.log('%cAdd, multiply, and divide NOT allowed', "color: red")
+  }
+
+  // check for subtract button
+  if (lastSelection === "negative" || allowEquals) {
+    subtractBtn.classList.add('inactive')
+    console.log('%cSubtract (or negative) NOT allowed', "color: red")
+  } else {
+    subtractBtn.classList.remove('inactive')
+    console.log('%cSubtract (or negative) allowed', "color: green")
+  }
+
+  if (allowEquals) {
+    equals.classList.remove('inactive')
+    console.log('%cEquals allowed', "color: green")
+  } else {
+    equals.classList.add('inactive')
+    console.log('%cEquals NOT allowed', "color: red")
+  }
+
+  console.log('\n')
+}
 
 function clearDisplay() {
   display.textContent = ""

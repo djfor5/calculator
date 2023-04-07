@@ -27,3 +27,7 @@
 #operators-container > button {
   flex: 1 1 auto;
 }
+
+.inactive {
+  opacity: 0.5;
+}
