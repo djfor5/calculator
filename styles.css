@@ -1,6 +1,8 @@
 * {
-  font-weight: bold;
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 26px;
+  font-weight: bold;
+  box-sizing: border-box;
 }
 
 button {
@@ -8,10 +10,15 @@ button {
   border-radius: 5px;
 }
 
+h1 {
+  text-align: center;
+}
+
 #calculator {
   display: flex;
   flex-direction: column;
 
+  margin: auto;
   border: 3px solid black;
   border-radius: 15px;
 
@@ -22,7 +29,7 @@ button {
 }
 
 #display-container {
-  border: 1px solid black;
+  border: 2px solid black;
   border-radius: 4px;
 
   background-color: rgb(80, 80,80);
@@ -43,22 +50,25 @@ button {
 
 #buttons {
   display: flex;
+  flex-direction: column;
+}
+
+#non-calculate {
+  display: flex;
 }
 
 #digits-container button {
   padding: 5px 12px;
-  margin: 1px;
+  margin-bottom: 7px;
 }
 
-#clear-backspace-equals-container {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 15px;
+.digit {
+  background-color: lightcyan;
 }
 
-#clear-backspace-equals-container button {
-  padding: 5px 12px;
-  margin: 1px;
+#decimal {
+  background-color: cyan;
+  width: 43px;
 }
 
 #operators-container {
@@ -73,12 +83,15 @@ button {
   margin: 1px;
 }
 
-.digit {
-  background-color: lightcyan;
+#clear-backspace-equals-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
 }
 
-#decimal {
-  background-color: cyan;
+#clear-backspace-equals-container button {
+  padding: 5px 12px;
+  margin: 1px;
 }
 
 #clear {
