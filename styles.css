@@ -1,11 +1,16 @@
-* {
-  font-size: 26px;
-  font-weight: bold;
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
+* {
+  font-size: 26px;
+  font-weight: bold;
+}
+
 body {
-  font-family: monospace, monospace;
+  font-family: Arial,monospace, monospace;
 }
 
 button {
