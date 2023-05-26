@@ -41,11 +41,16 @@ h1 {
 #display-container {
   color: white;
   background-color: rgb(80, 80,80);
+  overflow: hidden;
+  text-overflow: ellipsis;
   
   border: 2px solid black;
   border-radius: 4px;
 
+  width: 200px;
   height: 40px;
+  margin-left: auto;
+  margin-right: auto;
   margin-bottom: 15px;
 
   display: flex;
