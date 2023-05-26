@@ -88,10 +88,26 @@ h1 {
   background-color: lightcyan;
 }
 
+.digit:hover {
+  background-color: rgb(202, 231, 231);
+}
+
+.digit:active {
+  background-color: rgb(178, 204, 204);
+}
+
 #decimal {
-  background-color: cyan;
+  background-color: rgb(14, 252, 252);
 
   width: 43px;
+}
+
+#decimal:hover {
+  background-color: rgb(0, 230, 230);
+}
+
+#decimal:active {
+  background-color: rgb(0, 204, 204);
 }
 
 #operators-container {
@@ -102,11 +118,22 @@ h1 {
   margin-left: 15px;
 }
 
-#operators-container > button {
+/* #operators-container > button, */
+.operator {
+  background-color: rgb(221, 220, 134);
+
   padding: 5px 12px;
   margin: 1px;
 
   flex: 1 1 auto;
+}
+
+.operator:hover {
+  background-color: rgb(189, 187, 109);
+}
+
+.operator:active {
+  background-color: rgb(158, 156, 91);
 }
 
 #clear-backspace-equals-container {
@@ -122,15 +149,39 @@ h1 {
 }
 
 #clear {
-  background-color: red;
+  background-color: rgb(255, 37, 37);
+}
+
+#clear:hover {
+  background-color: rgb(230, 22, 22);
+}
+
+#clear:active {
+  background-color: rgb(201, 15, 15);
 }
 
 #backspace {
-  background-color: orange;
+  background-color: rgb(255, 182, 48);
+}
+
+#backspace:hover {
+  background-color: rgb(233, 166, 43);
+}
+
+#backspace:active {
+  background-color: rgb(202, 142, 29);
 }
 
 #equals {
-  background-color: green;
+  background-color: rgb(21, 241, 21);
+}
+
+#equals:hover {
+  background-color: rgb(22, 206, 22);
+}
+
+#equals:active {
+  background-color: rgb(16, 175, 16);
 }
 
 .inactive {
