@@ -219,6 +219,7 @@ clear.addEventListener('click', () => {
   clearDisplay()
 })
 
+
 backspace.addEventListener('click', ()=>{
   if (!allowBackspace) return
   if (expressionStr.length <= resultLength) return
@@ -267,7 +268,9 @@ backspace.addEventListener('click', ()=>{
   displayValue(expressionStr)
 })
 
+
 function displayValue(value){ display.textContent = value }
+
 
 function updateAllowedButtons() {
   if (allowDigits) {
@@ -321,13 +324,7 @@ function updateAllowedButtons() {
   }
 
   // prevent any buttons being used (except clear and backspace) if display string is too long
-  if (expressionStr.length < MAXIMUM_DISPLAY_LENGTH-2) {
-    allBtns.forEach(allBtn => allBtn.classList.remove('inactive'))
-  } else if (expressionStr.length < MAXIMUM_DISPLAY_LENGTH) {
-    allBtns.forEach(allBtn => allBtn.classList.remove('inactive'))
-    addMultiplyDivideBtns.forEach(addMultiplyDivideBtn => addMultiplyDivideBtn.classList.add('inactive'))
-    subtractBtn.classList.add('inactive')
-  } else {
+  if (expressionStr.length >= MAXIMUM_DISPLAY_LENGTH) {
     allBtns.forEach(allBtn => allBtn.classList.add('inactive'))
     clear.classList.remove('inactive')
     backspace.classList.remove('inactive')
@@ -335,6 +332,7 @@ function updateAllowedButtons() {
 
   console.log('\n')
 }
+
 
 function clearDisplay() {
   display.textContent = ""
