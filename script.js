@@ -327,7 +327,6 @@ function updateAllowedButtons() {
   if (expressionStr.length >= MAXIMUM_DISPLAY_LENGTH) {
     allBtns.forEach(allBtn => allBtn.classList.add('inactive'))
     clear.classList.remove('inactive')
-    backspace.classList.remove('inactive')
   }
 
   console.log('\n')
