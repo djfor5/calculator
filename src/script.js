@@ -1,4 +1,8 @@
 import "./style.css";
+import {
+  operate,
+} from "./maths.js";
+import { displayValue, clearDisplay } from "./display.js";
 
 let number1;
 let operator;
@@ -30,29 +34,7 @@ const allBtns = document.querySelectorAll("button");
 
 updateAllowedButtons();
 
-displayValue(expressionStr);
-
-function add(num1, num2) { return num1 + num2; }
-
-function subtract(num1, num2) { return num1 - num2; }
-
-function multiply(num1, num2) { return num1 * num2; }
-
-function divide(num1, num2) { return num1 / num2; }
-
-function operate(num1, operatorSelection, num2) { // eslint-disable-line consistent-return
-  switch (operatorSelection) {
-    case "add":
-      return add(num1, num2);
-    case "subtract":
-      return subtract(num1, num2);
-    case "multiply":
-      return multiply(num1, num2);
-    case "divide":
-      return divide(num1, num2);
-    default:
-  }
-}
+displayValue(expressionStr, display);
 
 digitBtns.forEach((digitBtn) => {
   digitBtn.addEventListener("click", () => {
@@ -71,7 +53,7 @@ digitBtns.forEach((digitBtn) => {
 
     updateAllowedButtons();
 
-    displayValue(expressionStr);
+    displayValue(expressionStr, display);
   });
 });
 
@@ -97,7 +79,7 @@ decimal.addEventListener("click", () => {
 
   updateAllowedButtons();
 
-  displayValue(expressionStr);
+  displayValue(expressionStr, display);
 });
 
 operatorBtns.forEach((operatorBtn) => {
@@ -112,7 +94,7 @@ operatorBtns.forEach((operatorBtn) => {
     // add trailing zero if last character is a decimal at time of adding an operator
     if (expressionStr.slice(expressionStr.length - 1) === ".") {
       expressionStr += "0";
-      displayValue(expressionStr);
+      displayValue(expressionStr, display);
     }
 
     operator = operatorBtn.textContent;
@@ -133,7 +115,7 @@ operatorBtns.forEach((operatorBtn) => {
 
     updateAllowedButtons();
 
-    displayValue(expressionStr);
+    displayValue(expressionStr, display);
   });
 });
 
@@ -180,7 +162,7 @@ equals.addEventListener("click", () => {
 
   updateAllowedButtons();
 
-  displayValue(expressionStr);
+  displayValue(expressionStr, display);
   console.log("number1: ", number1);
   console.log("operator: ", operator);
   console.log("number2: ", number2);
@@ -208,7 +190,7 @@ clear.addEventListener("click", () => {
   console.clear();
   updateAllowedButtons();
 
-  clearDisplay();
+  clearDisplay(display);
 });
 
 backspace.addEventListener("click", () => {
@@ -256,10 +238,8 @@ backspace.addEventListener("click", () => {
 
   updateAllowedButtons();
 
-  displayValue(expressionStr);
+  displayValue(expressionStr, display);
 });
-
-function displayValue(value) { display.textContent = value; }
 
 function updateAllowedButtons() {
   if (allowDigits) {
@@ -319,8 +299,4 @@ function updateAllowedButtons() {
   }
 
   console.log("\n");
-}
-
-function clearDisplay() {
-  display.textContent = "";
 }
