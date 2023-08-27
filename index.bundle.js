@@ -2,6 +2,69 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./src/display.js":
+/*!************************!*\
+  !*** ./src/display.js ***!
+  \************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   clearDisplay: () => (/* binding */ clearDisplay),
+/* harmony export */   displayValue: () => (/* binding */ displayValue)
+/* harmony export */ });
+// eslint-disable-next-line no-param-reassign
+function displayValue(value, displayEl) {
+  displayEl.textContent = value;
+}
+function clearDisplay(displayEl) {
+  displayEl.textContent = ""; // eslint-disable-line no-param-reassign
+}
+
+
+
+/***/ }),
+
+/***/ "./src/maths.js":
+/*!**********************!*\
+  !*** ./src/maths.js ***!
+  \**********************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   operate: () => (/* binding */ operate)
+/* harmony export */ });
+function add(num1, num2) {
+  return num1 + num2;
+}
+function subtract(num1, num2) {
+  return num1 - num2;
+}
+function multiply(num1, num2) {
+  return num1 * num2;
+}
+function divide(num1, num2) {
+  return num1 / num2;
+}
+function operate(num1, operatorSelection, num2) {
+  // eslint-disable-line consistent-return
+  switch (operatorSelection) {
+    case "add":
+      return add(num1, num2);
+    case "subtract":
+      return subtract(num1, num2);
+    case "multiply":
+      return multiply(num1, num2);
+    case "divide":
+      return divide(num1, num2);
+    default:
+  }
+}
+
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/dist/cjs.js!./src/style.css":
 /*!*************************************************************!*\
   !*** ./node_modules/css-loader/dist/cjs.js!./src/style.css ***!
@@ -739,6 +802,10 @@ var __webpack_exports__ = {};
   \***********************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./style.css */ "./src/style.css");
+/* harmony import */ var _maths_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./maths.js */ "./src/maths.js");
+/* harmony import */ var _display_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./display.js */ "./src/display.js");
+
+
 
 let number1;
 let operator;
@@ -765,33 +832,7 @@ const backspace = document.querySelector("#backspace");
 const equals = document.querySelector("#equals");
 const allBtns = document.querySelectorAll("button");
 updateAllowedButtons();
-displayValue(expressionStr);
-function add(num1, num2) {
-  return num1 + num2;
-}
-function subtract(num1, num2) {
-  return num1 - num2;
-}
-function multiply(num1, num2) {
-  return num1 * num2;
-}
-function divide(num1, num2) {
-  return num1 / num2;
-}
-function operate(num1, operatorSelection, num2) {
-  // eslint-disable-line consistent-return
-  switch (operatorSelection) {
-    case "add":
-      return add(num1, num2);
-    case "subtract":
-      return subtract(num1, num2);
-    case "multiply":
-      return multiply(num1, num2);
-    case "divide":
-      return divide(num1, num2);
-    default:
-  }
-}
+(0,_display_js__WEBPACK_IMPORTED_MODULE_2__.displayValue)(expressionStr, display);
 digitBtns.forEach(digitBtn => {
   digitBtn.addEventListener("click", () => {
     if (!allowDigits) return; // prevent additional digits from being added to result displayed
@@ -806,7 +847,7 @@ digitBtns.forEach(digitBtn => {
     lastSelection = "operand"; // set last value input
 
     updateAllowedButtons();
-    displayValue(expressionStr);
+    (0,_display_js__WEBPACK_IMPORTED_MODULE_2__.displayValue)(expressionStr, display);
   });
 });
 decimal.addEventListener("click", () => {
@@ -829,7 +870,7 @@ decimal.addEventListener("click", () => {
   lastSelection = "operand"; // set last value input
 
   updateAllowedButtons();
-  displayValue(expressionStr);
+  (0,_display_js__WEBPACK_IMPORTED_MODULE_2__.displayValue)(expressionStr, display);
 });
 operatorBtns.forEach(operatorBtn => {
   operatorBtn.addEventListener("click", () => {
@@ -843,7 +884,7 @@ operatorBtns.forEach(operatorBtn => {
     // add trailing zero if last character is a decimal at time of adding an operator
     if (expressionStr.slice(expressionStr.length - 1) === ".") {
       expressionStr += "0";
-      displayValue(expressionStr);
+      (0,_display_js__WEBPACK_IMPORTED_MODULE_2__.displayValue)(expressionStr, display);
     }
     operator = operatorBtn.textContent;
     if ((lastSelection === "operator" || lastSelection === "") && operatorBtn.id === "subtract") {
@@ -861,7 +902,7 @@ operatorBtns.forEach(operatorBtn => {
     allowBackspace = true;
     allowEquals = false;
     updateAllowedButtons();
-    displayValue(expressionStr);
+    (0,_display_js__WEBPACK_IMPORTED_MODULE_2__.displayValue)(expressionStr, display);
   });
 });
 equals.addEventListener("click", () => {
@@ -889,7 +930,7 @@ equals.addEventListener("click", () => {
   }
   number2 = operandOperatorOperand[2]; // eslint-disable-line prefer-destructuring
   number2 = Number(number2);
-  const result = operate(number1, operator, number2);
+  const result = (0,_maths_js__WEBPACK_IMPORTED_MODULE_1__.operate)(number1, operator, number2);
   operatorCount = 0; // reset count to enable operator to be used again
   expressionStr = result.toString(); // resolve the expression to show the result
 
@@ -902,7 +943,7 @@ equals.addEventListener("click", () => {
   lastSelection = "operand"; // set last value input
 
   updateAllowedButtons();
-  displayValue(expressionStr);
+  (0,_display_js__WEBPACK_IMPORTED_MODULE_2__.displayValue)(expressionStr, display);
   console.log("number1: ", number1);
   console.log("operator: ", operator);
   console.log("number2: ", number2);
@@ -925,7 +966,7 @@ clear.addEventListener("click", () => {
   number2 = null;
   console.clear();
   updateAllowedButtons();
-  clearDisplay();
+  (0,_display_js__WEBPACK_IMPORTED_MODULE_2__.clearDisplay)(display);
 });
 backspace.addEventListener("click", () => {
   if (!allowBackspace) return;
@@ -969,11 +1010,8 @@ backspace.addEventListener("click", () => {
     }
   }
   updateAllowedButtons();
-  displayValue(expressionStr);
+  (0,_display_js__WEBPACK_IMPORTED_MODULE_2__.displayValue)(expressionStr, display);
 });
-function displayValue(value) {
-  display.textContent = value;
-}
 function updateAllowedButtons() {
   if (allowDigits) {
     digitBtns.forEach(digitBtn => digitBtn.classList.remove("inactive"));
@@ -1028,9 +1066,6 @@ function updateAllowedButtons() {
     clear.classList.remove("inactive");
   }
   console.log("\n");
-}
-function clearDisplay() {
-  display.textContent = "";
 }
 })();
 
